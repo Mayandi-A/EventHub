@@ -1,0 +1,63 @@
+{
+  "users": [
+    {
+      "id": "4b11",
+      "username": "Mayandi-A",
+      "email": "markop@gmail.com",
+      "password": "1234",
+      "role": "attendee"
+    },
+    {
+      "id": "3753",
+      "username": "Mayandi-A",
+      "email": "mayandimayandi11@gmail.com",
+      "password": "123456",
+      "role": "organizer"
+    }
+  ],
+  "events": [
+    {
+      "id": "20b5",
+      "username": "3753",
+      "image": "https://placehold.co/600x300",
+      "isFeatured": true,
+      "title": "Future Of EV",
+      "price": "Free",
+      "description": "Exploring EV",
+      "date": "2025-07-04",
+      "time": "11:30",
+      "location": "Coimbatire",
+      "capacity": "100",
+      "aboutEvent": "Good",
+      "whatsIncluded": [
+        "Welcome refreshments and networking session"
+      ],
+      "schedule": [
+        {
+          "time": "9:00 AM - 9:30 AM",
+          "activity": "Registration & Welcome Coffee"
+        }
+      ]
+    }
+  ],
+  "Booked": [
+    {
+      "id": "c03f",
+      "event": "Future Of EV",
+      "username": "3753",
+      "name": "Mayandi A",
+      "email": "mayandimayandi11@gmail.com",
+      "phone": "7418146040",
+      "mealPreference": "vegetarian"
+    },
+    {
+      "id": "2517",
+      "event": "Future Of EV",
+      "username": "4b11",
+      "name": "mayandi a",
+      "email": "markop@gmail.com",
+      "phone": "7418146040",
+      "mealPreference": "vegetarian"
+    }
+  ]
+}

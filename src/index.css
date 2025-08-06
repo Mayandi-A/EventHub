@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    .qr-code {
+        background: linear-gradient(135deg, #4338ca 0%, #5e52f3 100%);
+    }
+    .timeline-item:not(:last-child):after {
+        content: '';
+        position: absolute;
+        left: 24px;
+        top: 32px;
+        height: calc(100% - 32px);
+        width: 2px;
+        background-color: #e5e7eb;
+    }
