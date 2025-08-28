@@ -29,7 +29,6 @@ const {user} =useUserContext()
     await axios.post('http://localhost:3000/Booked',formData).then(
         res=> console.log('success')
     )
-    console.log(formData)
     setFormData({
         event:eventTitle,
         username: user?.id || '',

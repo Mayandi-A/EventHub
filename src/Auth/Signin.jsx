@@ -18,22 +18,20 @@ export default function Signin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.get("http://localhost:3000/users");
-            const matchedUser = res.data.find(
-            (u) => u.email === formData.email && u.password === formData.password
-            );
-
-            if (matchedUser) {
-            console.log("Matched user:", matchedUser);
-            addUser(matchedUser); // this triggers setUser asynchronously
-            setShouldRedirect(true); // trigger navigation AFTER update
-            } else {
-            alert("Invalid credentials");
-            }
+          const res = await axios.post('http://localhost:4000/users/login', {
+            email: formData.email,
+            password: formData.password,
+          });
+          addUser(res.data.user, res.data.token); // Save both to context/localStorage
+          setShouldRedirect(true);
         } catch (err) {
-            console.error("Login failed", err);
+          console.error('Error response:', err.response);
+          alert(err.response?.data?.message || "Invalid credentials or server error");
         }
-    };
+
+};
+
+
 
     useEffect(() => {
     if (shouldRedirect && user?.username) {

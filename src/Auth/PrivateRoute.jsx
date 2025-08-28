@@ -4,7 +4,7 @@ import { useUserContext } from '../context/UserProvider';
 const PrivateRoute = ({ children }) => {
   const { user } = useUserContext();
 
-  if (!user?.username) {
+  if (!user) {
     return <Navigate to="/signin" replace />;
   }
 
