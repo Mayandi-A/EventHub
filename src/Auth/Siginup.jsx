@@ -21,23 +21,18 @@ export default function Signup() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  //...
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post("http://localhost:4000/users/register", formData);
+    navigate("/signin");
+  } catch (err) {
+    if (err.response?.data?.message) setError(err.response.data.message);
+    else setError("Something went wrong");
+  }
+};
 
-    try {
-      const res = await axios.get(`http://localhost:3000/users?email=${formData.email}`);
-      if (res.data.length > 0) {
-        setError('Email already exists. Try logging in.');
-        return;
-      }
-
-      await axios.post("http://localhost:3000/users", formData);
-      navigate("/signin");
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-indigo-50 via-purple-50 to-blue-50 flex items-center justify-center p-6">

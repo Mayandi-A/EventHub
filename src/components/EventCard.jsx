@@ -10,7 +10,7 @@ const EventCard = ({event}) => {
 
   const handleRegisterClick = () => {
     setShowRegistrationForm(true);
-    console.log(user)
+    // console.log(user)
   };
 
   const handleViewDetailsClick = () => {
