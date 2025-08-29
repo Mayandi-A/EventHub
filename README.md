@@ -188,7 +188,7 @@ We welcome contributions! Here's how to get started:
 
 Found a bug? Have a suggestion? 
 
-1. Check existing [Issues](https://github.com/yourusername/eventhub/issues)
+1. Check existing [Issues](https://github.com/Mayandi-A/EventHub/issues)
 2. Create a new issue with detailed description
 3. Use appropriate labels (bug, enhancement, question)
 
@@ -213,11 +213,11 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
   <h3>⭐ Found this helpful? Give it a star!</h3>
-  <p>Built with ❤️ by <a href="https://github.com/yourusername">Mayandi</a></p>
+  <p>Built with ❤️ by <a href="https://github.com/Mayandi-A">Mayandi</a></p>
   
   <p>
-    <a href="https://github.com/yourusername/eventhub/stargazers">⭐ Stars</a> •
-    <a href="https://github.com/yourusername/eventhub/network/members">🔄 Forks</a> •
-    <a href="https://github.com/yourusername/eventhub/issues">🐛 Issues</a>
+    <a href="https://github.com/Mayandi-A/EventHub/stargazers">⭐ Stars</a> •
+    <a href="https://github.com/Mayandi-A/EventHub/network/members">🔄 Forks</a> •
+    <a href="https://github.com/Mayandi-A/EventHub/issues">🐛 Issues</a>
   </p>
 </div>
