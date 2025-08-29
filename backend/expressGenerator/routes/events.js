@@ -1,7 +1,7 @@
 const express = require("express");
 const Event = require("../models/event");
 const router = express.Router();
-
+const Ticket = require("../models/ticket");
 const auth = require("../middleware/auth");
 
 // Create new event
@@ -52,6 +52,7 @@ router.post("/", auth, async (req, res) => {
 });
 
 // Register/attend event (only logged-in users)
+
 router.post("/:id/register", auth, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -61,12 +62,22 @@ router.post("/:id/register", auth, async (req, res) => {
       return res.status(400).json({ message: "Already registered" });
     }
 
+    // Add user to attendees
     event.attendees.push(req.user.id);
     await event.save();
-    res.json(event);
+
+    // Create a ticket for the event
+    const ticket = new Ticket({
+      event: event._id,
+      user: req.user.id
+    });
+    await ticket.save();
+
+    res.json({ message: "Registered successfully", ticket });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
 
 module.exports = router;
