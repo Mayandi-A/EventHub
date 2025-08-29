@@ -1,134 +1,245 @@
 # 🎟️ EventHub
 
-EventHub is a full-stack **event management platform** where organizers can create and manage events, and attendees can register, view, and download tickets.  
-Built with **React (Vite) + TailwindCSS** on the frontend and **Express + MongoDB** on the backend.
+<div align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/TailwindCSS-Styling-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
+</div>
+
+<div align="center">
+  <h3>🚀 A full-stack event management platform for organizers and attendees</h3>
+  <p><strong>Create events • Register attendees • Download tickets • Manage seamlessly</strong></p>
+</div>
 
 ---
 
 ## ✨ Features
 
-### 👨‍💼 Organizers
-- Create, edit, and delete events
-- Mark events as **featured**
-- View registered attendees
-- See whether events are **upcoming** or **ended**
+<table>
+<tr>
+<td width="50%">
 
-### 👥 Attendees
-- Browse and register for events
-- View all registered tickets
-- Download beautiful **ticket images** (with event details & QR placeholder)
-- Delete tickets
+### 👨‍💼 **For Organizers**
+- ✅ Create, edit, and delete events
+- ⭐ Mark events as **featured**
+- 👥 View registered attendees
+- 📅 Track **upcoming** vs **ended** events
+- 📊 Event management dashboard
 
-### ⚙️ General
-- JWT authentication with auto-logout on expiry
-- Role-based access (Organizer vs Attendee)
-- Global Axios interceptors for token handling
-- TailwindCSS UI with hover effects, badges (Featured, Ended), and animations
+</td>
+<td width="50%">
+
+### 👥 **For Attendees**
+- 🔍 Browse and discover events
+- 🎫 Register for events instantly
+- 📱 View all registered tickets
+- 🖼️ Download beautiful **ticket images**
+- 🗑️ Manage ticket registrations
+
+</td>
+</tr>
+</table>
+
+### ⚙️ **Core Features**
+- 🔐 **JWT Authentication** with auto-logout on expiry
+- 🎭 **Role-based Access** (Organizer vs Attendee)
+- 🌐 **Global Axios Interceptors** for seamless token handling
+- 🎨 **Modern TailwindCSS UI** with animations and hover effects
+- 🏷️ **Smart Badges** (Featured, Ended status indicators)
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Frontend**: React 19, Vite 7, TailwindCSS 4, Axios, React Router DOM  
-- **Backend**: Express, Mongoose, JWT, Bcrypt, CORS  
-- **Database**: MongoDB
+<div align="center">
+
+| **Frontend** | **Backend** | **Database** |
+|:---:|:---:|:---:|
+| React 19 | Express.js | MongoDB |
+| Vite 7 | Mongoose | |
+| TailwindCSS 4 | JWT Auth | |
+| Axios | Bcrypt | |
+| React Router DOM | CORS | |
+
+</div>
 
 ---
 
 ## 📂 Project Structure
 
+```
 EventHub/
-├── backend/
-│ ├── models/ # User, Event, Ticket
-│ ├── routes/ # Auth, Events, Tickets
-│ ├── middleware/ # Auth JWT middleware
-│ ├── seedEvents.js # Populate sample events
-│ └── server.js # Express app entry
+├── 🎯 backend/
+│   ├── models/              # User, Event, Ticket schemas
+│   ├── routes/              # Authentication, Events, Tickets API
+│   ├── middleware/          # JWT authentication middleware
+│   ├── seedEvents.js        # Sample event data population
+│   └── server.js            # Express application entry point
 │
-├── src/ # Frontend (React + Vite)
-│ ├── pages/ # Home, MyEvents, MyTickets, etc.
-│ ├── components/ # EventCard, CreateEventForm, ViewAttendees
-│ ├── context/ # UserProvider (auth state)
-│ ├── Auth/ # Login, Register, PrivateRoute
-│ ├── axiosConfig.js # Axios interceptors
-│ └── main.jsx / App.jsx
-
-yaml
-Copy code
+├── 🎨 frontend/src/
+│   ├── pages/               # Home, MyEvents, MyTickets, Profile
+│   ├── components/          # EventCard, CreateEventForm, ViewAttendees
+│   ├── context/             # UserProvider (global auth state)
+│   ├── Auth/                # Login, Register, PrivateRoute components
+│   ├── axiosConfig.js       # Axios interceptors configuration
+│   └── App.jsx              # Main application component
+│
+└── 📄 package.json
+```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### 1. Clone Repository
+### **Prerequisites**
+- Node.js (v18+)
+- MongoDB (local or cloud)
+- Git
+
+### **1. Clone Repository**
 ```bash
 git clone https://github.com/yourusername/eventhub.git
 cd eventhub
-2. Backend Setup
-bash
-Copy code
+```
+
+### **2. Backend Setup**
+```bash
 cd backend
 npm install
+
 # Create .env file
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-PORT=4000
-# Run server
+echo "MONGO_URI=your_mongodb_connection_string" > .env
+echo "JWT_SECRET=your_super_secret_key" >> .env
+echo "PORT=4000" >> .env
+
+# Start development server
 npm run dev
-3. Frontend Setup
-bash
-Copy code
+```
+
+### **3. Frontend Setup**
+```bash
 cd ../
 npm install
+
+# Start development server
 npm run dev
-Visit 👉 http://localhost:5173
+```
 
-🔐 Authentication
-Users register/login to receive a JWT
+### **4. Access Application**
+🌐 **Frontend**: [http://localhost:5173](http://localhost:5173)  
+🔧 **Backend API**: [http://localhost:4000](http://localhost:4000)
 
-Axios interceptor attaches token to every request
+---
 
-If token expires, user is automatically logged out and redirected to login
+## 🔐 Authentication Flow
 
-Organizer role can create events; Attendees can only register
+```mermaid
+graph TD
+    A[User Login/Register] --> B[JWT Token Generated]
+    B --> C[Token Stored in Context + localStorage]
+    C --> D[Axios Interceptor Attaches Token]
+    D --> E[Protected Routes Access]
+    E --> F{Token Valid?}
+    F -->|Yes| G[Continue to App]
+    F -->|No| H[Auto Logout & Redirect to Login]
+```
 
-🎟 Tickets
-Tickets are generated when a user registers for an event
+- **Secure JWT Authentication** with automatic token refresh
+- **Role-based Authorization** (Organizer vs Attendee permissions)
+- **Automatic Logout** on token expiry with seamless redirect
 
-Stored in DB with event + user details
+---
 
-Users can download tickets as PNG (styled with Canvas)
+## 🎟️ Ticket System
 
-Option to delete tickets from MyTickets page
+<div align="center">
 
-🖼 Screenshots
-Event Cards
-Hover effects
+| **Feature** | **Description** |
+|:---|:---|
+| 🎫 **Smart Generation** | Auto-created when user registers for events |
+| 💾 **Database Storage** | Secure storage with event + user relationships |
+| 🖼️ **Visual Downloads** | Beautiful PNG tickets with Canvas rendering |
+| ⚡ **Quick Management** | Easy delete/manage from MyTickets dashboard |
+| 📱 **QR Integration** | QR code placeholder for future scanning features |
 
-Featured badge
+</div>
 
-Ended badge
+---
 
-Ticket Download
-Gradient background
+## 📸 Screenshots
 
-Event details
+<details>
+<summary>🖼️ <strong>Click to view screenshots</strong></summary>
 
-QR placeholder
+### 🏠 **Dashboard View**
+![Dashboard](./screenshots/dashboard.png)
+*Modern event cards with hover effects and status badges*
 
-🤝 Contributing
-Fork the repo
+### 🎫 **Ticket Download**
+![Ticket](./screenshots/ticket-download.png)  
+*Beautiful ticket design with gradient backgrounds and QR codes*
 
-Create a branch (feature/new-feature)
+### 📱 **Mobile Responsive**
+![Mobile](./screenshots/mobile-view.png)
+*Fully responsive design across all devices*
 
-Commit changes
+</details>
 
-Push branch and open PR
+---
 
-📜 License
-MIT License © 2025 [Your Name]
+## 🤝 Contributing
 
-pgsql
-Copy code
+We welcome contributions! Here's how to get started:
 
-Do you want me to also add **screenshots placeholders** (like `![screenshot](path)`) so you can drop in images later?
+1. **🍴 Fork** the repository
+2. **🌿 Create** your feature branch (`git checkout -b feature/AmazingFeature`)
+3. **💾 Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
+4. **🚀 Push** to the branch (`git push origin feature/AmazingFeature`)
+5. **🔄 Open** a Pull Request
+
+### **Development Guidelines**
+- Follow existing code style and conventions
+- Add tests for new features
+- Update documentation as needed
+- Ensure mobile responsiveness
+
+---
+
+## 🐛 Issue Reporting
+
+Found a bug? Have a suggestion? 
+
+1. Check existing [Issues](https://github.com/yourusername/eventhub/issues)
+2. Create a new issue with detailed description
+3. Use appropriate labels (bug, enhancement, question)
+
+---
+
+## 📋 Roadmap
+
+- [ ] 🔔 **Push Notifications** for event reminders
+- [ ] 📊 **Analytics Dashboard** for organizers
+- [ ] 💳 **Payment Integration** for paid events
+- [ ] 🌍 **Multi-language Support**
+- [ ] 📱 **Mobile App** (React Native)
+- [ ] 🔍 **Advanced Search & Filtering**
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  <h3>⭐ Found this helpful? Give it a star!</h3>
+  <p>Built with ❤️ by <a href="https://github.com/yourusername">Your Name</a></p>
+  
+  <p>
+    <a href="https://github.com/yourusername/eventhub/stargazers">⭐ Stars</a> •
+    <a href="https://github.com/yourusername/eventhub/network/members">🔄 Forks</a> •
+    <a href="https://github.com/yourusername/eventhub/issues">🐛 Issues</a>
+  </p>
+</div>
