@@ -1,24 +1,35 @@
-import React from 'react'
-import EventCard from '../components/EventCard'
-import { useState } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import EventCard from "../components/EventCard";
+import axios from "axios";
+
 export default function Home() {
-    const [events,setEvents]=useState([])
-    const [isSearch,setSearch]=useState(false)
-    const [searchTerm,setSearchTerm]=useState('')
-    axios.get("http://localhost:3000/events").then(
-      res=>{
-        setEvents(res.data)
-      }
-    ).catch(
-      err=>console.log(err)
-    )
-    const handleSearchInputChange=(e)=>{
-      setSearchTerm(e.target.value)
-      setSearch(true)
-    }
-  return (<div className="p-6">
-  <div className="mb-8 max-w-2xl mx-auto">
+  const [events, setEvents] = useState([]);
+  const [isSearch, setSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Fetch events once on component mount
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/events")
+      .then((res) => {
+        setEvents(res.data);
+      })
+      .catch((err) => console.error("Error fetching events:", err));
+  }, []);
+
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+    setSearch(true);
+  };
+
+  const filteredEvents = events.filter((event) =>
+    event.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="p-6">
+      {/* Search box */}
+      <div className="mb-8 max-w-2xl mx-auto">
         <div className="flex gap-3 items-center">
           <div className="flex-1 relative">
             <input
@@ -30,7 +41,10 @@ export default function Home() {
             />
             {searchTerm && (
               <button
-                onClick={() => setSearchTerm('')}
+                onClick={() => {
+                  setSearchTerm("");
+                  setSearch(false);
+                }}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 ✕
@@ -39,22 +53,26 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {isSearch && (
+
+      {/* Search results */}
+      {isSearch ? (
         <div className="mt-8 px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {events
-              .filter(event => event.title.toLowerCase().includes(searchTerm.toLowerCase()))
-              .map(event => (
-                <EventCard event={event} key={event.id} />
-              ))}
+            {filteredEvents.map((event) => (
+              <EventCard event={event} key={event._id} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        // All events
+        <div className="mt-8 px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {events.map((event) => (
+              <EventCard event={event} key={event._id} /> 
+            ))}
           </div>
         </div>
       )}
-
-    {isSearch ?<></>:<div className="mt-8 px-6">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {events.map((event)=><EventCard event={event} key={event.id}></EventCard>)}
     </div>
-    </div>}</div>
-  )
+  );
 }

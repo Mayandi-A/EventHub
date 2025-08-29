@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useUserContext } from '../context/UserProvider';
 import axios from 'axios';
 
-const Register = ({ isOpen, onClose, eventTitle }) => {
-const {user} =useUserContext()
+const Register = ({ isOpen, onClose, eventTitle, eventId }) => {
+const {user,token} =useUserContext()
   const [formData, setFormData] = useState({
-    event:eventTitle,
-    username:user?.id,
+    event:eventId,
+    username:user?._id,
     name: '',
     email: '',
     phone: '',
@@ -21,24 +21,45 @@ const {user} =useUserContext()
     }));
   };
 
-  const handleSubmit = async() => {
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert('Please fill in all required fields');
-      return;
-    }
-    await axios.post('http://localhost:3000/Booked',formData).then(
-        res=> console.log('success')
-    )
+  const handleSubmit = async () => {
+  if (!formData.name || !formData.email || !formData.phone) {
+    alert("Please fill in all required fields");
+    return;
+  }
+
+  try {
+    await axios.post(
+  `http://localhost:4000/events/${eventId}/register`,
+  {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    mealPreference: formData.mealPreference,
+  },
+  {
+    headers: { Authorization: `Bearer ${token}` }, // ✅ use token from context
+  }
+);
+
+
+    console.log("Registered successfully ✅");
+
+    // reset form
     setFormData({
-        event:eventTitle,
-        username: user?.id || '',
-        name: '',
-        email: '',
-        phone: '',
-        mealPreference: 'vegetarian'
+      event: eventTitle,
+      username: user?.id || "",
+      name: "",
+      email: "",
+      phone: "",
+      mealPreference: "vegetarian",
     });
     onClose();
-  };
+  } catch (err) {
+    console.error("Error registering:", err);
+    alert(err.response?.data?.message || "Failed to register for event");
+  }
+};
+
 
   if (!isOpen) return null;
 

@@ -18,8 +18,8 @@ export default function ViewAttendees({ isOpen, onClose, event }) {
     
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
-      const response = await axios.get(`http://localhost:3000/Booked`)
-      setAttendees(response.data)
+      const res = await axios.get(`http://localhost:4000/events/${event._id}`);
+      setAttendees(res.data.attendees);
     } catch (err) {
       setError('Failed to load attendees')
       console.error('Error fetching attendees:', err)

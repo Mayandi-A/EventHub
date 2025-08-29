@@ -104,6 +104,7 @@ const EventCard = ({event}) => {
         isOpen={showRegistrationForm}
         onClose={handleCloseForm}
         eventTitle={event.title}
+        eventId={event._id}
       />
     </>
   );
