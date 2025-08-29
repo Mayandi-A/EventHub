@@ -8,20 +8,23 @@ export default function MyEvents() {
   const [showViewAttendees, setShowViewAttendees] = useState(false)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState(null)
-  const {user}=useUserContext()
+  const {user,token}=useUserContext()
   const [myEvents,setMyEvents] = useState([])
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/events?username=${user?.id}`);
-        setMyEvents(res.data);
-      } catch (error) {
-        console.error("Error fetching tickets", error);
-      }
-    };
+  const fetchMyEvents = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/events/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMyEvents(res.data);
+    } catch (error) {
+      console.error("Error fetching my events", error);
+    }
+  };
 
-    if (user?.id) fetchBookings();
-  }, [user]);
+  if (user?.id) fetchMyEvents();
+}, [user, token]);
+
 
   const handleCreateEvent = () => {
     setShowCreateForm(true)
@@ -30,17 +33,23 @@ export default function MyEvents() {
   const handleCloseCreateForm = () => {
     setShowCreateForm(false)
   }
-
   const handleSaveEvent = async (newEvent) => {
-    try {
-      const response = await axios.post('http://localhost:3000/events', newEvent)
-      setMyEvents(prev => [...prev, response.data])
-      console.log('Event created successfully:', response.data)
-    } catch (error) {
-      console.error('Error creating event:', error)
-      alert('Failed to create event. Please try again.')
-    }
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/events",
+      newEvent,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // 👈 token from context/localStorage
+        },
+      }
+    );
+    setMyEvents((prev) => [...prev, response.data]);
+  } catch (error) {
+    alert(error.response?.data?.message || "Failed to create event.");
   }
+};
+
 
   const handleViewAttendees = (event) => {
     setSelectedEvent(event)
@@ -74,7 +83,7 @@ export default function MyEvents() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {myEvents.length > 0 ? (
           myEvents.map((event) => (
-            <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-2xl transition-all duration-500 transform group cursor-pointer">
+            <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-2xl transition-all duration-500 transform group cursor-pointer">
               <div className="relative overflow-hidden">
                 <img
                   src="https://placehold.co/600x300"

@@ -8,7 +8,9 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 dotenv.config();
 const cors = require('cors');
+var ticketsRouter = require('./routes/tickets');
 
+var eventsRouter = require('./routes/events');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -31,7 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/events', eventsRouter);
+app.use('/tickets', ticketsRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -4,14 +4,17 @@ import { useUserContext } from '../context/UserProvider';
 import html2canvas from 'html2canvas';
 
 const MyTickets = () => {
-  const { user } = useUserContext();
+  const { user , token} = useUserContext();
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/Booked?username=${user?.id}`);
+        const res = await axios.get("http://localhost:4000/tickets/my", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setBookings(res.data);
+
       } catch (error) {
         console.error("Error fetching tickets", error);
       }
