@@ -111,10 +111,9 @@ npm install
 # Create .env file
 echo "MONGO_URI=your_mongodb_connection_string" > .env
 echo "JWT_SECRET=your_super_secret_key" >> .env
-echo "PORT=4000" >> .env
 
 # Start development server
-npm run dev
+npm start
 ```
 
 ### **3. Frontend Setup**
@@ -167,27 +166,6 @@ graph TD
 
 ---
 
-## 📸 Screenshots
-
-<details>
-<summary>🖼️ <strong>Click to view screenshots</strong></summary>
-
-### 🏠 **Dashboard View**
-![Dashboard](./screenshots/dashboard.png)
-*Modern event cards with hover effects and status badges*
-
-### 🎫 **Ticket Download**
-![Ticket](./screenshots/ticket-download.png)  
-*Beautiful ticket design with gradient backgrounds and QR codes*
-
-### 📱 **Mobile Responsive**
-![Mobile](./screenshots/mobile-view.png)
-*Fully responsive design across all devices*
-
-</details>
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions! Here's how to get started:
@@ -235,7 +213,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
   <h3>⭐ Found this helpful? Give it a star!</h3>
-  <p>Built with ❤️ by <a href="https://github.com/yourusername">Your Name</a></p>
+  <p>Built with ❤️ by <a href="https://github.com/yourusername">Mayandi</a></p>
   
   <p>
     <a href="https://github.com/yourusername/eventhub/stargazers">⭐ Stars</a> •
