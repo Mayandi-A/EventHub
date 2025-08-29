@@ -8,6 +8,7 @@ const eventSchema = new mongoose.Schema({
   time: { type: String, required: true },
   location: { type: String, required: true },
   capacity: { type: Number, required: true },
+  isFeatured: Boolean,
   image: String,
   price: String,
   aboutEvent: String,

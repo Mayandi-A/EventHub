@@ -7,6 +7,7 @@ import { useUserContext } from '../context/UserProvider'
 export default function Signin() {
     const [shouldRedirect, setShouldRedirect] = useState(false);
     const {user,addUser,logout}=useUserContext()
+    const [isLoading, setIsLoading] = useState(false);
     
     const [formData,setFormData]=useState({username:"",email:"",password:""})
     const handleInputChange=(e)=>{
@@ -17,18 +18,26 @@ export default function Signin() {
     const [focusedField, setFocusedField] = useState(null);
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-          const res = await axios.post('http://localhost:4000/users/login', {
-            email: formData.email,
-            password: formData.password,
-          });
-          addUser(res.data.user, res.data.token); // Save both to context/localStorage
-          setShouldRedirect(true);
-        } catch (err) {
-          console.error('Error response:', err.response);
-          alert(err.response?.data?.message || "Invalid credentials or server error");
-        }
-
+        setIsLoading(true); 
+        if(formData.email!==""){
+          try {
+            const [res] = await Promise.all([
+              axios.post('http://localhost:4000/users/login', {
+                email: formData.email,
+                password: formData.password,
+              }),
+              new Promise(resolve => setTimeout(resolve, 3000)) // 3 second delay
+            ]);
+            addUser(res.data.user, res.data.token); // Save both to context/localStorage
+            setShouldRedirect(true);
+          } catch (err) {
+            setIsLoading(false)
+            console.error('Error response:', err.response);
+            alert(err.response?.data?.message || "Invalid credentials or server error");
+          }
+      }else {setIsLoading(false)
+        alert("enter email and password")
+      };
 };
 
 
@@ -113,9 +122,16 @@ export default function Signin() {
               {/* Submit Button */}
               <button
                 onClick={handleSubmit}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Sign In
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 relative overflow-hidden"              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Signing In...</span>
+                  </div>
+                ) : (
+                  'Sign In'
+                )}
               </button>
             </div>
           </div>
