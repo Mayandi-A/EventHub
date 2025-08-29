@@ -5,16 +5,20 @@ const Ticket = require("../models/ticket");
 const auth = require("../middleware/auth");
 
 const User = require("../models/user"); 
-// Create new event
-router.post("/", async (req, res) => {
+// Create new event (only logged-in users, usually organizers)
+router.post("/", auth, async (req, res) => {
   try {
-    const event = new Event(req.body);
+    const event = new Event({
+      ...req.body,
+      organizer: req.user.id, // secure assignment
+    });
     await event.save();
     res.status(201).json(event);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 // Get events created by the logged-in organizer
 router.get("/my", auth, async (req, res) => {
@@ -69,6 +73,35 @@ router.get('/:id/attendees', auth, async (req, res) => {
     res.status(500).json({ message: 'Error fetching attendees' });
   }
 });
+
+router.delete('/:id',auth, async (req,res)=>{
+  try{
+    const isDeleted = await Event.findByIdAndDelete(req.params.id);
+    if(!isDeleted){
+      return res.status(404).json({ message: 'event not found' });
+    }
+    res.status(200).json({ message: 'event deleted successfully', isDeleted });
+  }
+  catch(error){
+    console.error('Error deleting event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+
+})
+
+//✅ update an event
+router.put("/:id",auth, async(req,res)=>{
+  try{
+    const event = await Event.findByIdAndUpdate(req.params.id,req.body ,{new : true})
+    if(!event){
+      return res.status(404).send('event not found');
+    }
+    res.status(200).json({ message: 'event edited successfully', event });
+  }catch(error){
+    console.error('Error updating event:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+})
 
 // ✅ Register user for an event
 router.post("/:id/register", auth, async (req, res) => {

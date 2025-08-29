@@ -1,11 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUserContext } from '../context/UserProvider';
-import domtoimage from 'dom-to-image-more';
+import { Trash2 } from "lucide-react"; // add this
+import { useNavigate } from 'react-router-dom';
 
 const MyTickets = () => {
   const { user, token } = useUserContext();
   const [bookings, setBookings] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(null); // add this
+  const navigate = useNavigate();
+  // Delete ticket
+  const handleDeleteTicket = async (ticketId) => {
+    if (!confirm("Are you sure you want to delete this ticket?")) return;
+
+    setIsDeleting(ticketId);
+    try {
+      await axios.delete(`http://localhost:4000/tickets/${ticketId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setBookings((prev) => prev.filter((t) => t._id !== ticketId));
+    } catch (error) {
+      console.error("Error deleting ticket", error);
+      alert(error.response?.data?.message || "Failed to delete ticket.");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
 
   // Fetch user tickets
   useEffect(() => {
@@ -245,14 +267,48 @@ const handleDownload = (id) => {
               </p>
 
               {/* Download Button */}
+              <div className="flex gap-3">
               <button
                 onClick={() => handleDownload(ticket._id)}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg relative overflow-hidden group/register"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg relative overflow-hidden group/attendees flex-1"
               >
                 <span className="relative z-10">Download Ticket</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-600 translate-x-full group-hover/register:translate-x-0 transition-transform duration-300"></div>
               </button>
-
+              {/* Delete Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTicket(ticket._id);
+                }}
+                disabled={isDeleting === ticket._id}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeleting === ticket._id ? (
+                  <svg
+                    className="w-4 h-4 animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  <Trash2 size={16} />
+                )}
+              </button>
+              </div>
               {/* Decorative Gradients */}
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 transform translate-x-10 -translate-y-10"></div>
               <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-blue-100 to-indigo-100 rounded-full blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-700 transform -translate-x-8 translate-y-8"></div>
@@ -260,9 +316,21 @@ const handleDownload = (id) => {
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-600 text-lg col-span-full">
-          No tickets found. Register for an event to see your tickets here.
-        </p>
+        <div className="col-span-full text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">🎫</div>
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            No tickets found
+          </h3>
+          <p className="text-gray-500 mb-6">
+            Register for an event to see your tickets here!
+          </p>
+          <button
+            onClick={() => {navigate('/')}}
+            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+          >
+            Browse Events
+          </button>
+        </div>
       )}
     </div>
   );
