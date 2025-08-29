@@ -4,6 +4,7 @@ const router = express.Router();
 const Ticket = require("../models/ticket");
 const auth = require("../middleware/auth");
 
+const User = require("../models/user"); 
 // Create new event
 router.post("/", async (req, res) => {
   try {
@@ -14,6 +15,7 @@ router.post("/", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 // Get events created by the logged-in organizer
 router.get("/my", auth, async (req, res) => {
   try {
@@ -53,31 +55,52 @@ router.post("/", auth, async (req, res) => {
 
 // Register/attend event (only logged-in users)
 
+// ✅ Get attendees for an event
+router.get('/:id/attendees', auth, async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id)
+      .populate('attendees', 'username email phone'); // populate only needed fields
+
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    res.json(event.attendees || []);
+  } catch (err) {
+    console.error('Error fetching attendees:', err);
+    res.status(500).json({ message: 'Error fetching attendees' });
+  }
+});
+
+// ✅ Register user for an event
 router.post("/:id/register", auth, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ message: "Event not found" });
 
+    // Prevent duplicate registrations
     if (event.attendees.includes(req.user.id)) {
       return res.status(400).json({ message: "Already registered" });
     }
 
-    // Add user to attendees
+    // Add user ID to event attendees
     event.attendees.push(req.user.id);
     await event.save();
 
-    // Create a ticket for the event
+    // Create a ticket and include user info for easy frontend display
+    const user = await User.findById(req.user.id);
     const ticket = new Ticket({
       event: event._id,
-      user: req.user.id
+      user: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone
     });
     await ticket.save();
 
     res.json({ message: "Registered successfully", ticket });
   } catch (err) {
+    console.error('Error registering:', err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
 
 module.exports = router;

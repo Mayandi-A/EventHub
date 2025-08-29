@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUserContext } from '../context/UserProvider';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image-more';
 
 const MyTickets = () => {
   const { user, token } = useUserContext();
@@ -23,17 +23,183 @@ const MyTickets = () => {
     if (user?.id) fetchBookings();
   }, [user, token]);
 
-  // Download ticket card as image
-  const handleDownload = async (id) => {
-    const card = document.getElementById(`ticket-${id}`);
-    if (!card) return;
+ // Updated handleDownload function with canvas-based ticket generation
+const handleDownload = (id) => {
+  const ticketData = bookings.find(ticket => ticket._id === id);
+  if (!ticketData) return;
 
-    const canvas = await html2canvas(card);
+  // Create canvas for ticket
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Set canvas dimensions
+  canvas.width = 800;
+  canvas.height = 400;
+  
+  // Create gradient background
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, '#667eea');
+  gradient.addColorStop(1, '#764ba2');
+  
+  // Fill background
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Add rounded corners effect (fill corners with white to simulate border-radius)
+  ctx.globalCompositeOperation = 'destination-out';
+  const radius = 20;
+  
+  // Top-left corner
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius, Math.PI, 1.5 * Math.PI);
+  ctx.arc(radius, radius, radius, 1.5 * Math.PI, 0);
+  ctx.rect(0, 0, radius, radius);
+  ctx.fill();
+  
+  // Top-right corner
+  ctx.beginPath();
+  ctx.arc(canvas.width - radius, radius, radius, 1.5 * Math.PI, 0);
+  ctx.arc(canvas.width - radius, radius, radius, 0, 0.5 * Math.PI);
+  ctx.rect(canvas.width - radius, 0, radius, radius);
+  ctx.fill();
+  
+  // Bottom-right corner
+  ctx.beginPath();
+  ctx.arc(canvas.width - radius, canvas.height - radius, radius, 0, 0.5 * Math.PI);
+  ctx.arc(canvas.width - radius, canvas.height - radius, radius, 0.5 * Math.PI, Math.PI);
+  ctx.rect(canvas.width - radius, canvas.height - radius, radius, radius);
+  ctx.fill();
+  
+  // Bottom-left corner
+  ctx.beginPath();
+  ctx.arc(radius, canvas.height - radius, radius, 0.5 * Math.PI, Math.PI);
+  ctx.arc(radius, canvas.height - radius, radius, Math.PI, 1.5 * Math.PI);
+  ctx.rect(0, canvas.height - radius, radius, radius);
+  ctx.fill();
+  
+  // Reset composite operation
+  ctx.globalCompositeOperation = 'source-over';
+  
+  // Set text properties
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'left';
+  
+  // Event Title
+  ctx.font = 'bold 36px Arial';
+  ctx.fillText(ticketData.event?.title || 'Event Ticket', 40, 80);
+  
+  // Subtitle
+  ctx.font = '18px Arial';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.fillText('ADMIT ONE', 40, 110);
+  
+  // Dashed line separator
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.setLineDash([10, 10]);
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(40, 160);
+  ctx.lineTo(canvas.width - 40, 160);
+  ctx.stroke();
+  ctx.setLineDash([]); // Reset line dash
+  
+  // Event Details
+  ctx.fillStyle = 'white';
+  ctx.font = '14px Arial';
+  
+  // Venue
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.fillText('VENUE', 40, 210);
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 18px Arial';
+  ctx.fillText(ticketData.event?.location || 'TBA', 40, 235);
+  
+  // Date
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.font = '14px Arial';
+  ctx.fillText('DATE', 40, 275);
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 16px Arial';
+  const dateText = ticketData.event?.date 
+    ? new Date(ticketData.event.date).toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      })
+    : 'TBA';
+  ctx.fillText(dateText, 40, 300);
+  
+  // Time
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.font = '14px Arial';
+  ctx.fillText('TIME', 250, 275);
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 16px Arial';
+  ctx.fillText(ticketData.event?.time || 'TBA', 250, 300);
+  
+  // Vertical dashed line
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.setLineDash([8, 8]);
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(canvas.width - 200, 180);
+  ctx.lineTo(canvas.width - 200, canvas.height - 40);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  
+  // Ticket ID section
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+  ctx.font = '12px Arial';
+  ctx.fillText('TICKET ID', canvas.width - 40, 210);
+  
+  // Ticket ID (split into multiple lines if too long)
+  ctx.fillStyle = 'white';
+  ctx.font = 'bold 12px Courier New, monospace';
+  const ticketId = ticketData._id;
+  const maxWidth = 140;
+  const lineHeight = 20;
+  let y = 235;
+  
+  // Split ticket ID into chunks
+  for (let i = 0; i < ticketId.length; i += 8) {
+    const chunk = ticketId.substr(i, 8);
+    ctx.fillText(chunk, canvas.width - 40, y);
+    y += lineHeight;
+  }
+  
+  // QR Code placeholder
+  ctx.fillStyle = 'white';
+  ctx.fillRect(canvas.width - 120, canvas.height - 120, 80, 80);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 14px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('QR', canvas.width - 80, canvas.height - 75);
+  
+  // Add some decorative elements
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.beginPath();
+  ctx.arc(canvas.width - 50, 50, 40, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  ctx.beginPath();
+  ctx.arc(50, canvas.height - 50, 25, 0, 2 * Math.PI);
+  ctx.fill();
+  
+  // Convert canvas to blob and download
+  canvas.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.download = `Ticket-${id}.png`;
-    link.href = canvas.toDataURL();
+    link.download = `${ticketData.event?.title || 'Event'}-Ticket-${id}.png`;
+    link.href = url;
     link.click();
-  };
+    
+    // Clean up
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+};
+
 
   return (
     <div className="p-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

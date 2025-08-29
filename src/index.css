@@ -1,3 +1,27 @@
+/* Styles for clean exported ticket images */
+.ticket-export {
+  background: white !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.ticket-export * {
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+}
+
+/* Ensure text and layout look nice in exported image */
+.ticket-export h3 {
+  color: #111827 !important; /* Dark gray text */
+}
+
+.ticket-export p {
+  color: #374151 !important; /* Medium gray text */
+}
+
+
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     .card-hover:hover {
